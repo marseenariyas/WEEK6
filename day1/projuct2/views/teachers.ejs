@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <a class="add btn" href="/teachers/add">Add teachers</a>
+    <ul class="list">
+       <% teachers.forEach((t) => { %>
+            <li>
+                <a href="/teachers/<%= t.id %>" ><%= t.name %></a> - subject:<%= t.subject %>
+            </li>
+       <% }) %>
+
+    </ul>
+    <a class="back" href="/">Back to home page</a>
+</body>
+</html>

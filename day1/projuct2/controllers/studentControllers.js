@@ -1,3 +1,7 @@
+const path=require('path')
+
+const filepath=path.join(__dirname,'../data/students.json')
+
 let students=[
     {id: 1, name: 'Rahul', grade: '10'},
     {id: 2, name: 'Meera', grade: '12'},
@@ -30,21 +34,28 @@ const getStudentForm=(req,res)=>{
 
 const getAllStudents=async(req,res)=>{
     try{
-       const studentsList=await fecthAllStudents()
+      // const studentsList=await fecthAllStudents()
+       const data=await fstat.readFile(filepath,'utf-8')
+       const studentsList=JSON.parse(data)
        res.render('students',{title:'All Students',students:studentsList});
     }catch(err){
        res.status(500).send('Filed to fetch students');
     }
 }
 
-const addStudentForm=(req,res)=>{
+const addStudentForm=async(req,res)=>{
     const{name,grade}=req.body;
+
+    const data=await fs.readFile(filepath,'utf-8')
+    const students=JSON.parse(data)
+
     const newStudent={
-        id:students.length + 1,
+        id: Date.now(),
         name,
         grade,
     };
     students.push(newStudent);
+    await fs.writeFile(filepath,JSON.stringify(students,null,2))
     res.redirect('/students');
 }
 

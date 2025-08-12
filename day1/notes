@@ -1,232 +1,444 @@
-// <!-- --------------what is controller splittinG---------------
-// moving ur route logic (what happens when a req is made)
-// into a seperate file called a controller-instead of writing
-// all logic inside the app.js or routes.js
+// // <!-- --------------what is controller splittinG---------------
+// // moving ur route logic (what happens when a req is made)
+// // into a seperate file called a controller-instead of writing
+// // all logic inside the app.js or routes.js
 
-// ----------------WHY WE DO IT-----------------
-// clean code-----keeps route files small and neat
-// reusability----reuse controller functions elsewhere
-// Easy Debug-----u know where to look when something breaks
-// Better Maintanance---quickly update logic without touching routes
-// Real-World Practice---Follows MvC(model-view-controller)structure usind in big application -->
-
-
-// ---------------------------WHY CONTROLLER SPLITTING-----------------------------
-// seperate of concern===========routing and logic are kept sepr=arate
-// code readeblity===========easy to understand each files purpose
-// reusability===============controller functions can be reused
-// testing===============easier to write unit tests
-// maintainability==========easily updates one part without breaking other parts
-
-// by splitting controllers: follow MVC pattern(Model-View-Controller) 
-// routes file--tells where to go
-// controllers file---say what to do
+// // ----------------WHY WE DO IT-----------------
+// // clean code-----keeps route files small and neat
+// // reusability----reuse controller functions elsewhere
+// // Easy Debug-----u know where to look when something breaks
+// // Better Maintanance---quickly update logic without touching routes
+// // Real-World Practice---Follows MvC(model-view-controller)structure usind in big application -->
 
 
-// ---------WHAT IS ASYNCHRONOUS PROGRAMMING?---------------
-// program doesnt wait for one task to finish before starting the next
-// in node.js,it allows multiple operations (eg: file reading,database queries,api calls) 
-// to happen inthe background,without blocking the main thread.
+// // ---------------------------WHY CONTROLLER SPLITTING-----------------------------
+// // seperate of concern===========routing and logic are kept sepr=arate
+// // code readeblity===========easy to understand each files purpose
+// // reusability===============controller functions can be reused
+// // testing===============easier to write unit tests
+// // maintainability==========easily updates one part without breaking other parts
 
-// ----WHY IS IT IMPORTANT IN NODE.JS?-----------------
-// node.js uses a single threaded event loop, only one task runs at a time ,
-//  if on etask takes a long eg(reading files),it will block others--unless its asynchronous
-
-// asynchronous programming solves this by --letting long running tasks happen in the 
-// background ,keeping app fast and responsive
-
-// ------HOW DOES IT WORK?-------
-// node.js uses:  callback, promise, async/await
-// these are tools to handle asynchronous code
-
-// eg synchrounous, asynchrounous
-
-// SYNCHRONOUS CODE(BLOCK EVERTHING)
-// const fs= require('fs')
-// const data= fs.readFileSync(''file.txt.'utf8');
-// console.log(data);
-// console.log('this run after the file');
-
-// ASYNCHRONOUS CODE(NON-BLOCKING)
-// const fs=require('fs');
-// fs.readFile('file.txt','utf8',(err,data)=>{
-//     if (err) throw err;
-//     console.log(data);
-// });
-// console.log('this run without waiting for file read);
-// -----HOW ASYNC WORK BEHIND SCENES?-------
-// call an async function (eg: fs.readFile)
-// node gives it to the os or background worker
-// node doesnt wait continues other work
-// when finished, the resullt comes back via callback or promise----this is possible due to nodes 
-// event loop+callbacke queue.
-
-// ------Ways to Handle Asynchronous Code----------
-// --CALLBACK---
-// fs.readFile('file.txt','utf8'(err,data)=>{
-//     console.log(data);
-// });
-
-// -----PROMISE----
-// const readFile=require('fs').promises;
-// readFile('file.txt','utf8')
-// .then(data=>console.log(data))
-// .catch(err=>console.log(err));
-
-// -----ASYNC/AWAIT(BEST AND CLEANEST)--------
-// const readFile=require('fs').promises;
-// async function read(){
-//     try{
-//         const data=await readFile('file.txt','utf8');
-//         console.log(data)
-//     }catch (err){
-//         console.error(err);
-//     }
-// }
-// read();
-
-// -------Real Use Cases in Node.js-------
-// reading file from disk, fetching data from a database, calling an external api, uploading  a file,  
-//  sending an email
+// // by splitting controllers: follow MVC pattern(Model-View-Controller) 
+// // routes file--tells where to go
+// // controllers file---say what to do
 
 
-// ---------- What is async/await?----------
-// async/await is a modern js syntax to write asynchrounos code that looks synchrounous
-// it built on top of promises--makes code cleaner, readable, ans easier to debug.
+// // ---------WHAT IS ASYNCHRONOUS PROGRAMMING?---------------
+// // program doesnt wait for one task to finish before starting the next
+// // in node.js,it allows multiple operations (eg: file reading,database queries,api calls) 
+// // to happen inthe background,without blocking the main thread.
+
+// // ----WHY IS IT IMPORTANT IN NODE.JS?-----------------
+// // node.js uses a single threaded event loop, only one task runs at a time ,
+// //  if on etask takes a long eg(reading files),it will block others--unless its asynchronous
+
+// // asynchronous programming solves this by --letting long running tasks happen in the 
+// // background ,keeping app fast and responsive
+
+// // ------HOW DOES IT WORK?-------
+// // node.js uses:  callback, promise, async/await
+// // these are tools to handle asynchronous code
+
+// // eg synchrounous, asynchrounous
+
+// // SYNCHRONOUS CODE(BLOCK EVERTHING)
+// // const fs= require('fs')
+// // const data= fs.readFileSync(''file.txt.'utf8');
+// // console.log(data);
+// // console.log('this run after the file');
+
+// // ASYNCHRONOUS CODE(NON-BLOCKING)
+// // const fs=require('fs');
+// // fs.readFile('file.txt','utf8',(err,data)=>{
+// //     if (err) throw err;
+// //     console.log(data);
+// // });
+// // console.log('this run without waiting for file read);
+// // -----HOW ASYNC WORK BEHIND SCENES?-------
+// // call an async function (eg: fs.readFile)
+// // node gives it to the os or background worker
+// // node doesnt wait continues other work
+// // when finished, the resullt comes back via callback or promise----this is possible due to nodes 
+// // event loop+callbacke queue.
+
+// // ------Ways to Handle Asynchronous Code----------
+// // --CALLBACK---
+// // fs.readFile('file.txt','utf8'(err,data)=>{
+// //     console.log(data);
+// // });
+
+// // -----PROMISE----
+// // const readFile=require('fs').promises;
+// // readFile('file.txt','utf8')
+// // .then(data=>console.log(data))
+// // .catch(err=>console.log(err));
+
+// // -----ASYNC/AWAIT(BEST AND CLEANEST)--------
+// // const readFile=require('fs').promises;
+// // async function read(){
+// //     try{
+// //         const data=await readFile('file.txt','utf8');
+// //         console.log(data)
+// //     }catch (err){
+// //         console.error(err);
+// //     }
+// // }
+// // read();
+
+// // -------Real Use Cases in Node.js-------
+// // reading file from disk, fetching data from a database, calling an external api, uploading  a file,  
+// //  sending an email
 
 
-// ------Basic Syntax------
-// 1. async keyword
-// used before a funtion to tell js
-// this function will return a promise
-
-// async function myfunction(){
-//     return 'helloo..';
-// }
-// also write----
-// function myFunction(){
-//     return promise.resolve('hellooo..');
-// }
-
-// -------await keyword-----
-// used inside an async function to wait for a promise to resolve
-// async function getDate(){
-//     const result =await somePromise();
-//     console.log(result);
-// }
-
-// eg:---
-// function delay(ms){
-//     return new Promise(resolve=>setTimeout(resolve,ms));
-// }
-// async function showMessage(){
-//     console.log('wait 2 sec..;)
-//     await delay(2000);
-//     console.log('done waiting)
-// }
-// showMessage();
-
-// ------Reading a File------
-// const fs=require('fs').promises;
-// async function readFile(){
-//     try{
-//         const data=await fs.readFile('file.txt','utf8');
-//         console.log('file contend',data)
-//     } catch(err){
-//         console.log('error reading file',err);
-//     }
-// }
-// readFile();
-
-// SYNTAX              MEANING
-// async---------Declares a function that returns a promise
-// await---------Pauses execution until promise resolves
-// try/catch-----Catches errors in async functions.
-
-// AWAIT can only be used inside an ASYNC function
-// it waits for promise to resolve/reject
-// use try/catch to handle errors cleanly
-
-// TRY/CATCH  INSIDE ASYNC FUNCTIONS
-//  what--- its a way to handle errors when using await in asynchronous functions'
-//  why----when await a promise, it might fail(eg: file not found,network error etc..)
-// if dont catch it app can crash
+// // ---------- What is async/await?----------
+// // async/await is a modern js syntax to write asynchrounos code that looks synchrounous
+// // it built on top of promises--makes code cleaner, readable, ans easier to debug.
 
 
-//  async function myFunction(){
-//     try{
-//         const result= await someAsyncTask();
-//         console.log('Result',result);
-//     }catch (error){
-//         console.log('error occured:',error.message)
-//     }
-//  }
+// // ------Basic Syntax------
+// // 1. async keyword
+// // used before a funtion to tell js
+// // this function will return a promise
 
-//  node.js eg:(file read)
+// // async function myfunction(){
+// //     return 'helloo..';
+// // }
+// // also write----
+// // function myFunction(){
+// //     return promise.resolve('hellooo..');
+// // }
 
-//  const fs=require('fs').promises;
-//  async function myFile(){
-//     try{
-//         const content=await fs.readFile('myfile.txt','utf8');
-//         console.log('Content:',content);
-//     }catch(error){
-//        console.log('error file',error.message);
-//     }
-//  }
-//  myFile();
+// // -------await keyword-----
+// // used inside an async function to wait for a promise to resolve
+// // async function getDate(){
+// //     const result =await somePromise();
+// //     console.log(result);
+// // }
 
-// try--run code that might throw an error
-// await--wait for async operation(like file read)
-// catch--Catch any thrown error(eg:file missing)
+// // eg:---
+// // function delay(ms){
+// //     return new Promise(resolve=>setTimeout(resolve,ms));
+// // }
+// // async function showMessage(){
+// //     console.log('wait 2 sec..;)
+// //     await delay(2000);
+// //     console.log('done waiting)
+// // }
+// // showMessage();
 
-// ------WHAT IS CENTRALIZED ERROR HANDLING-------
-// its a way to handle all errors in 1 place,instead of using try/catch in every route
-// this keeps code clean, organizedand scalable
+// // ------Reading a File------
+// // const fs=require('fs').promises;
+// // async function readFile(){
+// //     try{
+// //         const data=await fs.readFile('file.txt','utf8');
+// //         console.log('file contend',data)
+// //     } catch(err){
+// //         console.log('error reading file',err);
+// //     }
+// // }
+// // readFile();
 
-// without centralized handler------
-// reapeated try/catch blocks
-// harder to debug
-// messy and unorganized
+// // SYNTAX              MEANING
+// // async---------Declares a function that returns a promise
+// // await---------Pauses execution until promise resolves
+// // try/catch-----Catches errors in async functions.
 
-// with centralized handler------
-// one place handler all errors
-// easier to track and log errors
-// clean and consistent structure
+// // AWAIT can only be used inside an ASYNC function
+// // it waits for promise to resolve/reject
+// // use try/catch to handle errors cleanly
 
-// -----Create a Custom Error Handler Middleware-----
-// module.exports = (err, req, res, next) => {
-//   console.error(" Error:", err.message);
-
-//   res.status(err.status || 500).render('error', {
-//     message: err.message || 'Something went wrong!',
-//     status: err.status || 500,
-//   });
-// };
-
-// ------Use the Error Handler in Your App-----
-// const express = require('express');
-// const app = express();
-// const errorHandler = require('./middlewares/errorHandler');
-
-// // Your routes here...
-// app.get('/', (req, res) => {
-//   res.send("Hello!");
-// });
-
-// // Use AFTER all routes
-// app.use(errorHandler);
-
-// app.listen(3000, () => console.log("Server running"));
+// // TRY/CATCH  INSIDE ASYNC FUNCTIONS
+// //  what--- its a way to handle errors when using await in asynchronous functions'
+// //  why----when await a promise, it might fail(eg: file not found,network error etc..)
+// // if dont catch it app can crash
 
 
-// ---------Where is next(err) used?----------
-// its used inside routes or middileware functions when an error occurs.instead of manually
-//  responding with res.send(),pass the err to a centralized error handler
+// //  async function myFunction(){
+// //     try{
+// //         const result= await someAsyncTask();
+// //         console.log('Result',result);
+// //     }catch (error){
+// //         console.log('error occured:',error.message)
+// //     }
+// //  }
 
-// -------- Handling Uncaught Exceptions & Rejections in Node.js--------------
-// node.js is asynchronous and event-DeviceOrientationEvent,so error can happen in different ways.
-// must handle them properly to avoid crashing the app.
+// //  node.js eg:(file read)
+
+// //  const fs=require('fs').promises;
+// //  async function myFile(){
+// //     try{
+// //         const content=await fs.readFile('myfile.txt','utf8');
+// //         console.log('Content:',content);
+// //     }catch(error){
+// //        console.log('error file',error.message);
+// //     }
+// //  }
+// //  myFile();
+
+// // try--run code that might throw an error
+// // await--wait for async operation(like file read)
+// // catch--Catch any thrown error(eg:file missing)
+
+// // ------WHAT IS CENTRALIZED ERROR HANDLING-------
+// // its a way to handle all errors in 1 place,instead of using try/catch in every route
+// // this keeps code clean, organizedand scalable
+
+// // without centralized handler------
+// // reapeated try/catch blocks
+// // harder to debug
+// // messy and unorganized
+
+// // with centralized handler------
+// // one place handler all errors
+// // easier to track and log errors
+// // clean and consistent structure
+
+// // -----Create a Custom Error Handler Middleware-----
+// // module.exports = (err, req, res, next) => {
+// //   console.error(" Error:", err.message);
+
+// //   res.status(err.status || 500).render('error', {
+// //     message: err.message || 'Something went wrong!',
+// //     status: err.status || 500,
+// //   });
+// // };
+
+// // ------Use the Error Handler in Your App-----
+// // const express = require('express');
+// // const app = express();
+// // const errorHandler = require('./middlewares/errorHandler');
+
+// // // Your routes here...
+// // app.get('/', (req, res) => {
+// //   res.send("Hello!");
+// // });
+
+// // // Use AFTER all routes
+// // app.use(errorHandler);
+
+// // app.listen(3000, () => console.log("Server running"));
 
 
-// ------- What are Uncaught Exceptions?---------
-// uncaught expectations are errors that occur synchrounously and are not caught by a try-catch block.
+// // ---------Where is next(err) used?----------
+// // its used inside routes or middileware functions when an error occurs.instead of manually
+// //  responding with res.send(),pass the err to a centralized error handler
+
+// // -------- Handling Uncaught Exceptions & Rejections in Node.js--------------
+// // node.js is asynchronous and event-DeviceOrientationEvent,so error can happen in different ways.
+// // must handle them properly to avoid crashing the app.
+
+
+// // ------- What are Uncaught Exceptions?---------
+// // uncaught expectations are runtime errors that occur synchrounously and are not caught by a try-catch block.
+
+
+// //what is unhandled rejection?
+// //when a promise is rejected and dont handle te error using .catch() thats called an unhandled rejection.
+// //node.js will emit a special event:unhandledRejection
+
+//------------------------------------------------------------------------------------
+
+///================DAY2=====================================
+// STREAM
+// A stream is a event emitting object used to handle data bit by bit instead of all at once
+// it's useful for reading or writing large files or data efficiently
+
+// there are 4 types of streams--
+
+// Readable – streams you can read from (e.g., fs.createReadStream)
+// Writable – streams you can write to (e.g., fs.createWriteStream)
+// Duplex – streams that are both readable and writable (e.g., TCP socket)
+// Transform – duplex streams that can modify data while reading/writing (e.g., compression, encryption)
+
+// Why would we use streams over other methods like fs.readFile?
+// bcz fs.readFile() loads the entire file into memory which is inefficient for large files
+// Streams process data chunk by chunk, using less memory and allowing faster start times
+
+// EVENT EMITTER
+// is a built-in module that lets objects emit events and listen for them
+// and we listen to them using .on()
+
+// data - A chunk of data is available
+// end - end event fires after all the chunks are sent — it tells us the file is fully read
+// error - Something went wrong
+// close - The stream is closed
+
+
+//fs.createReadStream?
+//it's a method from the fs module that lets us read a file in chunks instead of loading the whole file into memory
+
+//Syntax
+const fs = require('fs');
+//parameters- path,encoding,highWaterMark(size of each chunk in bytes)
+const stream = fs.createReadStream('filename.txt', { encoding: 'utf8', highWaterMark:16 });//read 16 bytes
+
+readStream.on('data', (chunk) => {
+  console.log('Chunk:', chunk);  // logs parts of file
+});
+
+readStream.on('end',() => {
+  console.log('Done reading file.');
+});
+
+readStream.on('error',(err) => {
+  console.error('Error:', err);
+});
+
+//default chunk size is-- 64kb
+
+
+//system stores data in binary FormData(01001010), using utf-8 we convert that into readable form
+//A Buffer is a built-in object that is used to store and manipulate binary data directly — before converting it to readable strings using encodings like UTF-8
+
+
+//Reading without utf8:
+const readStream = fs.createReadStream('example.txt');
+
+readStream.on('data', (chunk) => {
+  console.log('Binary Buffer:', chunk);         // raw buffer
+  console.log('As string:', chunk.toString());  // convert manually
+});
+
+
+//CreateWriteStream
+//its a method used to write data to a file in chunks
+
+// .write() - writes chunks(add chunks)
+// .end() - closes the stream
+
+//writeStream.write('Hello, ')
+// writeStream.write('world!\n')
+// writeStream.end('This is the end.')
+
+//events of createwritestream:
+
+//finish - All data has been written and the stream is closed
+// error - An error occurred while writing
+// close - The stream is closed (after finish or manual close)
+
+const fs = require('fs');
+
+const writeStream = fs.createWriteStream('output.txt');
+
+writeStream.write('Hello World!\n');
+writeStream.write('Writing some data...\n');
+writeStream.end('Done!\n'); // triggers finish event
+
+// Events
+writeStream.on('finish', () => {
+  console.log('Writing completed.');
+});
+
+writeStream.on('error', (err) => {
+  console.error('Error:', err);
+});
+
+writeStream.on('close', () => {
+  console.log('Stream closed.');
+});
+
+//PIPE()
+//the .pipe() method connects a readable stream to a writable stream so that data flows automatically from one to the other
+//we don’t need to manually listen to data and write it 
+
+const fs = require('fs');
+
+const readStreamm = fs.createReadStream('input.txt');
+const writeStreamm = fs.createWriteStream('output.txt');
+
+readStreamm.pipe(writeStreamm);
+
+//this reads input.txt chunk by chunk and writes it into output.txt
+
+readStream.on('data', chunk => writeStream.write(chunk));
+//.pipe() handles this automatically(bts)
+
+//other than utf-8, we have--
+// 'ascii'	Basic English characters only (0–127)
+// 'hex'	Represents binary data as hexadecimal string
+
+
+//--------------------------------------------------------------------------------------
+
+// //=========---------------------DAY 3------------------------------
+// //what is process?
+//   // I computing a proces is simply a program execution.
+//   //when u run any program,whether its a browser,a music player,or a node.js script,operation system creates a
+  
+// Main Components of libuv
+//   Event Loop Core
+//       The heart of libuv.
+//       Continuously checks:
+//       Are any timers ready?
+//       Any I/O done?
+//       Any setImmediate() waiting?
+//       Runs callbacks in a fixed sequence of phases
+//    Phases in Event Loop:
+//      Timers → Handles setTimeout / setInterval.
+//      Pending Callbacks → I/O callbacks from previous cycles.
+//      Idle/Prepare → Internal work (you don’t control this).
+//      Poll phase→ Waits for new I/O events (network, file system).
+//      Check phase→ Runs setImmediate() callbacks.
+//      Close Callbacks phase→ Runs cleanup (e.g., socket close).
+
+
+//   Thread Pool
+//      Default: 4 threads (can change via UV_THREADPOOL_SIZE).
+//      Used for blocking/slow operations like:
+//         File system operations (fs.readFile)
+//         DNS lookups
+//         Crypto hashing
+//         Compression
+//     While thread pool works, JS keeps running.
+
+
+//   Handles & Requests
+//     Handles → Persistent objects (like a TCP socket or timer) that stay active.
+//     Requests → One-off operations (like reading a file once).
+//   Example:
+//     Timer handle stays until you clearTimeout().
+//     fs.readFile is a one-time request.
+
+
+//   Queues
+//      Inside libuv, there are multiple queues:
+//      Timers Queue → For setTimeout and setInterval.
+//      Pending Queue → For I/O that’s done but not yet run.
+//      Check Queue → For setImmediate().
+//      Close Callbacks Queue → For cleanup tasks.
+  
+  
+//    Polling Mechanism
+//       Uses epoll (Linux), kqueue (macOS), or IOCP (Windows) under the hood.
+//       This is how libuv efficiently waits for I/O events without wasting CPU.
+
+
+//--------event loop-------
+//what is event loop?
+// in node.js the eventloop is how it handles asynchrounous tasks without blocking 
+// itbruns in phases-- each pahse has its own queue of callbacks to run
+
+
+///--- there are 6 main phases in node.js eventloop
+//(accouding to libuv)
+// 1.Timer phase 
+//      runs callbacks from---settimeout(),setInterval()
+//      inside setTimeout(),setInterval() expire callbacks nokkm 
+// 2.Pending callback phases
+//      executes i/o callbacks defferes from previous cycle// sydtem level callbacks
+// 3.Idel/prepare
+//      internal work/dont control this
+// 4.Poll phase
+//      waits for new i/o events completion(inside threadpool,network,fs operation)
+// 5.Check phase
+//      runs setImmediate()calbacks
+// 6.Close Callback phase
+//      runs cleanup
+
+//What is child process in node.js?
+//chold process is another program that main node.js app starts and controls. 
+//it runs independently with its own memory and event loop bt can communicate with the parent process
+
+
+
+

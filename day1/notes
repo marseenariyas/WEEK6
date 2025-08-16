@@ -436,8 +436,37 @@ readStream.on('data', chunk => writeStream.write(chunk));
 //      runs cleanup
 
 //What is child process in node.js?
-//chold process is another program that main node.js app starts and controls. 
+//child process is another program that main node.js app starts and controls. 
 //it runs independently with its own memory and event loop bt can communicate with the parent process
+// use it for:
+//    Running shell comands(ls,dir,pythonscript.py)
+//    Spawning other node.js scripts 
+//    Offloading heavy cpu tasks
+
+// Child process methods----------
+//A. spawn
+//     Purpose:Launches a new process for long-running streaming tasks.
+// use case--- when u expect large output(eg:reading a 2gbfile and streaming it)
+//             when u want stream access to stdout and stderr
+//B. exec
+//      Purpose:runs a command in a shell, buffers the entire output,any returns it in a callback
+//use case--- when you want full outputal once(small results)
+//            not good for large output--memory-heavy
+//C. execFile
+//       Purpose:similar to exec,bt runs a binary directly without a shell.
+// use Case--- safer when arguments come from the user(avoids shell injection)
+//             faster than exec because no shell is started.
+//D. fork
+//      Purpose:special version of spawn for running noe.js script with communication via msg events
+//use Case---for inter-process communcation(IPC)between node processes
+//           eg: running multiple scripts in parallel and ssending JSONdata back.
+
+//shell option
+//   By default,spawn does not use a shell-it run the command directly
+//   you can set {shell:true}if u want shell features(pipes,redirects)
+
+//cpu-bond tasks and multithreading
+//  Problem:Node.js runs javaScript in a single thread.
 
 
 

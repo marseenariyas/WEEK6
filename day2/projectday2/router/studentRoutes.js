@@ -6,7 +6,7 @@ router.get('/',getAllStudents)
 
 router.get('/add',getStudentForm)
 
-router.post('/add',addStudentForm);
+router.post('/',addStudentForm);
 
 router.get('/:id',getSingleStudent);
 

@@ -44,7 +44,7 @@ const getStudentForm = (req, res) => {
 }
 
 const getAllStudents = async (req, res, next) => {
-    console.log('students')
+    //console.log('students')
     try {
         // const studentsList=await fecthAllStudents()
         const data = await fs.readFile(filepath, 'utf-8')

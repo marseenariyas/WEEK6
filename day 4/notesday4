@@ -1,0 +1,52 @@
+<!-- //what is cookie?
+//A cookie is a small piece of data stored in the clients browser
+//it helos websites remember users across visits
+//---how it works----
+//user visits a webpage->server creates a cookie and stores it in browser.
+//next time, browser automatically sends the cookie back to sever 
+// server uses it to identify the user
+//------use cases-----
+//remember me in login
+//storing language preference(english/malayalam)
+//shopping cart items saved for later
+
+const express=require('express');
+const cookieParser=require('cookie-parser');
+cost app=express();
+app.use(express.json());
+app.use(cookieParser('your-super-secret-key'));
+
+// what is session?
+// A session stores user data on the server side
+// Browser only stores a session ID(as a cookie),not full user data.
+
+//----How it Works-----
+// user logs in-> server create a session and tores user info (username,role,cart)
+// Browser stores just a session ID cookie
+// on every request, server matches session ID-> retrieves full user data.
+//---Use cases-----
+// online banking
+// E-commerce checkout process.
+// Admin dashboards.
+
+//----- Key Differences-----
+ Aspect	      Cookie (Client-Side)	    Session (Server-Side) 
+Storage	    Browser	                        Server
+Security	Less secure (can be stolen)  	More secure (data hidden from client)
+Size	    Limited (~4KB)	                Can store large data
+Speed	    Faster (no server lookup)	    Slightly slower (server lookup needed)
+Lifetime	Can be persistent (set expiry)	Usually ends when browser closes / timeou -->
+
+// app.use(session({
+    secret:'your-secret-key';
+    resave:false,
+    saveUninitialized:true,
+    cookie:{maxAge:1000*60*30}
+}));
+
+
+stateless vs stateful Authentication
+//
+//sateless-->JWT(JSON Web Token)
+//
+//

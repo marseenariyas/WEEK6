@@ -1,3 +1,77 @@
+//readFile()
+// used to read content of a file
+fs.readFile(path,encoding,callback)
+
+const fs=require('fs')
+fs.readFile('file.txt','utf8',(err,data)=>{
+  if(err){
+    console.log('error reading file',err);
+    return;
+  }
+  console.log('file content',data)
+});
+
+//appendFile()
+//add new content at the end of a file(without removing existing content)
+//fs.appendFile(path,data,callback)
+fs.appendFile('file.txt','\nNew line added',(err)=>{
+  if(err){
+    console.log('error appending file',err);
+    return;
+  }
+  console.log('new content added ',dta);
+});
+
+//writeFile()
+//create a new file or overwrite an existing file with new content.
+//fs.writeFile(path,data,callback)
+fs.writeFile('example.txt','Hello Marseena',(err)=>{
+  if(err){
+    console.log('error writing file',err);
+    return;
+  }
+  console.log('File Created and data writtern ')
+});
+
+//fs.readdir()--------
+//   reads the contents of a directory(folders+files inside it)
+//   to get a list of files/folders--eg: show uploaded files,display logs,or scan directories
+//fs.readdir(path,callback)
+fs.readdir('.',(err,files)=>{
+  if(err){
+    console.error('error reading directory',err);
+    return;
+  }
+  console.log('files in directories',files)
+});
+
+//fs.mkdir()------
+//creates a new directory(folder)
+//to organise files--eg:make a folder for each users uploads or store logs in logs/
+//fs.mkdir(path,callback)
+fs.mkdir('myFolder',(err)=>{
+  if(err){
+    console.error('error creating folder',err);
+    return
+  }
+  console.log('folder created successfully')
+})
+
+
+
+
+
+
+//readFile----->Read user data,settingor template files.
+//appendFile--->Write logs store history,keep activity records.
+//writeFile---->Save user profile data in a file,e=write config files,store reports or generated output
+
+
+
+
+
+
+
 // STREAM
 // A stream is a event emitting object used to handle data bit by bit instead of all at once
 // it's useful for reading or writing large files or data efficiently

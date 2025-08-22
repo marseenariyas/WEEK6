@@ -1,0 +1,188 @@
+//=========---------------------DAY 3------------------------------
+// //what is process?
+//   // I computing a proces is simply a program execution.
+//   //when u run any program,whether its a browser,
+//     a music player,or a node.js script,operation system creates a
+  
+// Main Components of libuv
+//   Event Loop Core
+//       The heart of libuv.
+//       Continuously checks:
+//       Are any timers ready?
+//       Any I/O done?
+//       Any setImmediate() waiting?
+//       Runs callbacks in a fixed sequence of phases
+//    Phases in Event Loop:
+//      Timers → Handles setTimeout / setInterval.
+//      Pending Callbacks → I/O callbacks from previous cycles.
+//      Idle/Prepare → Internal work (you don’t control this).
+//      Poll phase→ Waits for new I/O events (network, file system).
+//      Check phase→ Runs setImmediate() callbacks.
+//      Close Callbacks phase→ Runs cleanup (e.g., socket close).
+
+
+//   Thread Pool
+//      Default: 4 threads (can change via UV_THREADPOOL_SIZE).
+//      Used for blocking/slow operations like:
+//         File system operations (fs.readFile)
+//         DNS lookups
+//         Crypto hashing
+//         Compression
+//     While thread pool works, JS keeps running.
+
+
+//   Handles & Requests
+//     Handles → Persistent objects (like a TCP socket or timer) that stay active.
+//     Requests → One-off operations (like reading a file once).
+//   Example:
+//     Timer handle stays until you clearTimeout().
+//     fs.readFile is a one-time request.
+
+
+//   Queues
+//      Inside libuv, there are multiple queues:
+//      Timers Queue → For setTimeout and setInterval.
+//      Pending Queue → For I/O that’s done but not yet run.
+//      Check Queue → For setImmediate().
+//      Close Callbacks Queue → For cleanup tasks.
+  
+  
+//    Polling Mechanism
+//       Uses epoll (Linux), kqueue (macOS), or IOCP (Windows) under the hood.
+//       This is how libuv efficiently waits for I/O events without wasting CPU.
+
+// parts of libuv---->
+// eventloop-- eventloop asynchrounous operation akath endh execute cheyyunn therumanikknnad 
+//             next endh enn decide cheyynnad
+// Timer------ setTimeout,setIntervel okke ille idinte akath schedule cheyyune callbacks undallo
+//             idine run cheykkn aan timer.asynchrounos aayittullad kittuvaanenkl libuv
+//             avdnn id aayikyinnal callback vekkunnu
+// I/Opolling--I/O operations completion listen cheyd edkkn vendittan I/O polling
+// Threadpool--Heavy aayittulla or blocking taskine okke backgroundl run cheyyunnadin vendittan threadpool 
+//             default aayittulla 4 threads aan ullad
+// SignalHandling---os signals okk react cheyyunnadin venditt
+// File system operations---file nte read nd write task okk cheyyan
+// Process Handling----child process okk manage cheyyunnadin 
+
+//--------event loop-------
+//what is event loop?
+// in node.js the eventloop is how it handles asynchrounous tasks without blocking 
+// itbruns in phases-- each pahse has its own queue of callbacks to run
+
+
+///--- there are 6 main phases in node.js eventloop
+//(accouding to libuv)
+// 1.Timer phase 
+//      runs callbacks from---settimeout(),setInterval()
+//      inside setTimeout(),setInterval() expire callbacks nokkm 
+// 2.Pending callback phases
+//      executes i/o callbacks defferes from previous cycle// sydtem level callbacks
+// 3.Idel/prepare
+//      internal work/dont control this
+// 4.Poll phase
+//      waits for new i/o events completion(inside threadpool,network,fs operation)
+// 5.Check phase
+//      runs setImmediate()calbacks
+// 6.Close Callback phase
+//      runs cleanup
+
+//What is child process in node.js?
+//child process is another program that main node.js app starts and controls. 
+//it runs independently with its own memory and event loop bt can communicate with the parent process
+// use it for:
+//    Running shell comands(ls,dir,pythonscript.py)
+//    Spawning other node.js scripts 
+//    Offloading heavy cpu tasks
+
+// Child process methods----------
+//A. spawn
+//     Purpose:Launches a new process for long-running streaming tasks.
+// use case--- when u expect large output(eg:reading a 2gbfile and streaming it)
+//             when u want stream access to stdout and stderr
+//B. exec
+//      Purpose:runs a command in a shell, buffers the entire output,any returns it in a callback
+//use case--- when you want full outputal once(small results)
+//            not good for large output--memory-heavy
+//C. execFile
+//       Purpose:similar to exec,bt runs a binary directly without a shell.
+// use Case--- safer when arguments come from the user(avoids shell injection)
+//             faster than exec because no shell is started.
+//D. fork
+//      Purpose:special version of spawn for running noe.js script with communication via msg events
+//use Case---for inter-process communcation(IPC)between node processes
+//           eg: running multiple scripts in parallel and ssending JSONdata back.
+
+//shell option
+//   By default,spawn does not use a shell-it run the command directly
+//   you can set {shell:true}if u want shell features(pipes,redirects)
+
+//cpu-bond tasks and multithreading
+//  Problem:Node.js runs javaScript in a single thread.
+
+//what are worker threads in node.js?
+//Node.js is single-threaded by default(using the eventloop for async tasks)
+//but sometimes we need cpu intensive operations(eg:,image processing,encryption,mechine learning calculations)
+//if u do these heavy computations in the main thread, it blocks the event loop(no other requests are served until the task finishes.)
+//to solve this node.js provides the worker threads module
+//worker threads allow running javascript in multiple threads sharing memory 
+
+
+//when to use worker threads?
+//use worker threads only when tasks are cpu-bound not for normal async,i/o(like DB queries,HTTP requests or file i/o)
+//good for:
+//   Heavy Computations(factorial of a huge number, prime number generation)
+//   Image/Video processing(resizing,compression,filtering)
+//   Cryptography(password hashing,encryption/decryption)
+//   Machine Learning/Data Processing(training models,processing large datasets)
+//   Parallelism(splitting a large task into smaller parts and processing them in multiple workers)
+//not good :
+//   Reading/writing files-->use async I/O(non-blocking already)
+//   Database queries-->async drivers already handle concurrency.
+//   NetWorking--->handle well by eventloop
+
+//why multithreading in Node.js?
+// node.js excels at I/O bound tasks (thanks to event loop+async operations)
+// But it struggles with cpu-heavy tasks since those blocl the main threads 
+// worker threads let you offload cpu heavy tasks to another threads-->
+// keeping the main threads free for handling requests.
+
+//worker Methods:
+//   .postMessage()
+//   .terminate()
+//   worker.ref()-->keeps the process alive while worker runs.
+//   worker.unref()--->allow node.js to exit even if worker is still running.
+
+//Worker Events:
+//   message--->When Workers sends a message
+//   error----->If worker throw an error.
+//   exit------>When Workers exits.
+//   Online---->When Workers is ready.
+//(eg:---worker.on('message'(msg)=> console.log('from worker:'.msg));
+// worker.on('error',(err)=>console.log('worker error:',err));
+// worker.on('exit',(code)=>console.log('worker exit with code:',code));)
+
+// what is workerpoll?
+//  a node.js library for running tasks in a poll of worker threads .build on top of worker threads(default)
+// Automatically manages:
+//   create and reusing workers
+//   task queueing(workers take job when free)
+//   returning result with promises
+
+//what is cluster?
+// cluster in node.js is a build in module that allows you to run multiple 
+//instances of a node.js application(called workers)on different cpu cores. 
+// since node.js is single threaded by default,cluster helps in scaling the application 
+// across all available cpu core and improves performances.
+
+//USE CASES........
+//    Scaling web servers----->when u have high traffic and want to handle concurrent requests.
+//    Loading balancing------->distribute incoming connections automatically multiple workers.
+//    Reliability------------->If one worker crashes, others continue running,so the application remains available.
+
+//cluster--->multi-process scaling in node.js
+//use it to utilize all cpu cores for web servers and handle high traffic efficiently.
+
+// cluster to spread incoming requests across cpu cores.
+// Worker threads to split heavy calculations inside the same process.
+
+
